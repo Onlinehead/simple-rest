@@ -1,0 +1,68 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ include "simple-rest.fullname" . }}
+  labels:
+{{ include "simple-rest.labels" . | indent 4 }}
+spec:
+  replicas: {{ .Values.replicaCount }}
+  selector:
+    matchLabels:
+      app.kubernetes.io/name: {{ include "simple-rest.name" . }}
+      app.kubernetes.io/instance: {{ .Release.Name }}
+  template:
+    metadata:
+      labels:
+        app.kubernetes.io/name: {{ include "simple-rest.name" . }}
+        app.kubernetes.io/instance: {{ .Release.Name }}
+    spec:
+    {{- with .Values.imagePullSecrets }}
+      imagePullSecrets:
+        {{- toYaml . | nindent 8 }}
+    {{- end }}
+      containers:
+        - name: {{ .Chart.Name }}
+          image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
+          imagePullPolicy: {{ .Values.image.pullPolicy }}
+          env:
+            - name: REST_DATABASETYPE
+              value: {{ .Values.app.DatabaseType }}
+            - name: REST_POSTGRESPORT
+              value: {{ .Values.app.PostgresPort }}
+            - name: REST_POSTGRESHOST
+              value: {{ .Values.app.PostgresHost }}
+            - name: REST_POSTGRESUSER
+              value: {{ .Values.app.PostgresUser }}
+            - name: REST_POSTGRESPASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: {{ include "simple-rest.fullname" . }}-pgs
+                  key: password
+            - name: REST_POSTGRESDB
+              value: {{ .Values.app.PostgresDB }}
+          ports:
+            - name: http
+              containerPort: 8080
+              protocol: TCP
+          livenessProbe:
+            httpGet:
+              path: /ping
+              port: http
+          readinessProbe:
+            httpGet:
+              path: /ping
+              port: http
+          resources:
+            {{- toYaml .Values.resources | nindent 12 }}
+      {{- with .Values.nodeSelector }}
+      nodeSelector:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+    {{- with .Values.affinity }}
+      affinity:
+        {{- toYaml . | nindent 8 }}
+    {{- end }}
+    {{- with .Values.tolerations }}
+      tolerations:
+        {{- toYaml . | nindent 8 }}
+    {{- end }}

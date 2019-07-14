@@ -1,0 +1,4 @@
+FROM golang:1.12-stretch
+
+ADD . /go/src/github.com/onlinehead/simple-rest
+WORKDIR /go/src/github.com/onlinehead/simple-rest

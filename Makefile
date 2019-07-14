@@ -1,4 +1,5 @@
 IMAGE=onlinehead/simple-rest
+POSTGRES_HOST=127.0.0.1
 VERSION=0.1
 
 postgres_up:
@@ -18,7 +19,7 @@ run_local:
 	GO111MODULE=on go run server.go
 
 run:
-	docker run -it -p 8081:8080 --rm $(IMAGE):$(VERSION)
+	docker run -it -e REST_POSTGRESHOST=${POSTGRES_HOST} -p 8081:8080 --rm $(IMAGE):$(VERSION)
 
 build:
 	GO111MODULE=on go build -o bin/simple-rest -ldflags "-X BuildTime=`date +%Y-%m-%d:%H:%M:%S`" *.go

@@ -32,7 +32,10 @@ a `postgres` Helm chart. You can use prepared values for it from the `helm` dir.
 
 Command to install: `helm install --name=postgres stable/postgresql -f helm/postgres-values.yaml` 
 
-To install it, you need to call `helm install --name=simple-rest helm/simple-rest -f path_you_your_values_file.yaml`
+Then, you need to install the application: `helm install --name=simple-rest helm/simple-rest -f path_you_your_values_file.yaml`
+
+Of you will not create and apply your values file, the app will be created without ingress and to connect it you should use
+a port forward like `kubectl port-forward svc/simple-rest-simple-rest 8080:80`
 
 If you want to make a rolling update (that mode is enabled in a chart by default), just call `helm update simple-rest helm/simple-rest -f path_you_your_values_file.yaml`
 

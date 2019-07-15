@@ -41,15 +41,12 @@ func GetTimeObjFromVals(year int, month int, day int) (time.Time, error){
 
 func DaysDeltaBetweenTimes(from time.Time, to time.Time) int {
 	delta := from.Sub(to)
-	tomorrowMidnight := time.Now().AddDate(0,0,1).Truncate(24 * time.Hour)
-	timeBeforeMidnight := tomorrowMidnight.Sub(time.Now())
 	daysDelta := delta.Hours()/24
-	if daysDelta > 1 || daysDelta < 0{
+	if from.Month() == to.Month() && from.Day() == to.Day() {
+		return 0
+	} else if daysDelta > 1 || daysDelta < 0{
 		return int(daysDelta)
 	} else {
-		if delta.Minutes() >= timeBeforeMidnight.Minutes() {
-			return 1
-		}
-		return 0
+		return 1
 	}
 }

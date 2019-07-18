@@ -9,4 +9,5 @@ Check `/docs` directory.
 2. Create a Mock implementation for a database to run tests without DB.
 3. Performance tests.
 4. API documentation
-5. ...
+5. Prometheus metrics
+6. ...
